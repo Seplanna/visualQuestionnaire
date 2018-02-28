@@ -40,6 +40,18 @@ def GetHistogramm(im):
     plt.xlabel("Bins")
     plt.ylabel("# of Pixels")
 
+    """features = []
+    for (chan, color) in zip(chans, colors):
+        # create a histogram for the current channel and
+        # concatenate the resulting histograms for each
+        # channel
+        hist = cv2.calcHist([chan], [0], None, [256], [0, 256])
+        features.extend(hist)
+
+        # plot the histogram
+        plt.plot(hist, color=color)
+        plt.xlim([0, 256])
+    plt.savefig("del")"""
     hist = cv2.calcHist([chans[2], chans[1], chans[0]], [0, 1, 2], None,
                         [4, 4, 4], [0, 256, 0, 256, 0, 256])
 

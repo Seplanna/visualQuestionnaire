@@ -30,6 +30,11 @@ parser.add_argument('--delete_white_border', type=bool, default=False)
 parser.add_argument('--histogramm_classifier', type=bool, default=False)
 parser.add_argument('--take_pictures_from_first_bin', type=bool, default=False)
 
+parser.add_argument('--data_set', default="")
+parser.add_argument('--result_dir', default="")
+parser.add_argument('--n_examples', type = int, default=-1)
+
+
 
 
 FLAGS, unparsed = parser.parse_known_args()
@@ -75,21 +80,26 @@ def GetRandomExamples(data_set_path, n_examples):
     examples = random.sample(data, n_examples)
     return examples
 
-def SaveExamples(examples, result_dir):
+def SaveExamples(examples, result_dir, feature_n):
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)
     for ex in examples:
         basename = os.path.basename(ex).split("_")
-        subprocess.call(["cp", ex, result_dir + os.path.basename(ex)])
+        if feature_n > 0:
+            to_write = basename[feature_n] + "_"
+        else:
+            to_write = ''
+        subprocess.call(["cp", ex, result_dir + to_write + os.path.basename(ex)])
 
-def SaveRandomExamples(dataset_path, n_examples, result_dir):
-    SaveExamples(GetRandomExamples(dataset_path, n_examples), result_dir)
+def SaveRandomExamples(dataset_path, n_examples, result_dir, feature_number):
+    SaveExamples(GetRandomExamples(dataset_path, n_examples), result_dir, feature_number)
 
 if FLAGS.save_random_examples:
-    SaveRandomExamples("../CycleGAN_shoes/DATA_ALL_LATENT1/", 1000, "../CycleGAN_shoes/DATA_ALL_LATENT1_RANDOM_1000/")
+    SaveRandomExamples(FLAGS.data_set, FLAGS.n_examples, FLAGS.result_dir, FLAGS.n_features_embedding)
 #Generate Bin
 if FLAGS.run_bin:
-    DevideFeaturesIntoBins("../RankSVM_DATA/Shoes/Histogramm/result4/", "../RankSVM_DATA/Shoes/2/Histogramm/", FLAGS.n_bins, FLAGS.n_features_embedding)
+    DevideFeaturesIntoBins("../RankSVM_DATA/Shoes/Histogramm/result4/", "../RankSVM_DATA/Shoes/2/Histogramm/",
+                           FLAGS.n_bins, FLAGS.n_features_embedding)
 
 #GenerateData For CycleGAN
 if FLAGS.run_generate_CycleGANData:

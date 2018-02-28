@@ -101,6 +101,14 @@ def RunHierarhicalClustering(data_path, n_features,
 
 
 # Devide each Feature into 10 bins
+def RecieveBinOfTheFeature(value, bins, n_bins):
+    bin = 0
+    while (bin < n_bins - 1 and value > (bins[bin])):
+        bin += 1
+    if (bin == n_bins):
+        bin -= 1
+    return bin
+
 def MakeNormalFormat(data_path, result_file):
     data = glob(os.path.join(data_path, "*.jpg"))
     for d in data:
@@ -108,24 +116,24 @@ def MakeNormalFormat(data_path, result_file):
         name = "_".join(name)
         subprocess.call(["cp", d, result_file + name])
 
-def DevideFeatureIntoBins(data_path, n_bins, feature_n):
-    print("AAAAA")
-    data = []
-    for root, subdirs, files in os.walk(data_path):
-        for f in files:
-            print(f)
-            if os.path.splitext(f)[1].lower() in ('.jpg', '.jpeg'):
-                data += [os.path.join(root, f)]
-    print(len(data))
-    values = [float(os.path.basename(i).split("_")[feature_n]) for i in data]
+def DevideFeatureIntoBinsFromData(values, n_bins):
+
     arg_sort = np.argsort(values)
     step = len(values) / n_bins
-    print(step)
     values = np.array(values)
     bins = values[arg_sort[0::step]]
     bins = bins[1:]
-    print(bins, bins.shape)
     return bins
+
+def DevideFeatureIntoBins(data_path, n_bins, feature_n):
+    data = []
+    for root, subdirs, files in os.walk(data_path):
+        for f in files:
+            #print(f)
+            if os.path.splitext(f)[1].lower() in ('.jpg', '.jpeg'):
+                data += [os.path.join(root, f)]
+    values = [float(os.path.basename(i).split("_")[feature_n]) for i in data]
+    return DevideFeatureIntoBinsFromData(values, n_bins)
 
 def DevideFeaturesIntoBins(data_path, data_path_to_save, n_bins, n_features):
     if (not os.path.exists(data_path_to_save)):

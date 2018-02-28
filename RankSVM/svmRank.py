@@ -105,10 +105,11 @@ class RankSVM(svm.LinearSVC):
 
 if __name__ == '__main__':
     step = int(sys.argv[1])
+    data_dir = sys.argv[2]
     r = RankSVM()
-    r.fit("../CycleGAN_shoes/Experiment/test_AtoB_"+str(step) + "/",
-          "../CycleGAN_shoes/Experiment/test_BtoA_" + str(step)+"/", Gist)
-    np.savetxt("../CycleGAN_shoes/Experiment/My_"  +str(step) + ".txt", r.coef_.ravel())
+    r.fit(data_dir + "test_AtoB_"+str(step) + "/",
+           data_dir + "test_BtoA_" + str(step)+"/", Gist)
+    np.savetxt(data_dir + str(step) + ".txt", r.coef_.ravel())
 
 
 
